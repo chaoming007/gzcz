@@ -87,9 +87,17 @@
     
     <!--块1 end-->
     
-    <div class="loading-txt" v-show="loadShow">
+    <!-- <div class="loaded-txt" v-show="!loadLock"> 
+			<span>加载更多</span>
+		</div> -->
+    
+    <div class="loading-txt" v-show="!loadLock">
       <span>正在加载...</span>
     </div>
+    
+    <div class="loaded-txt" v-show="loadShow">
+			<span>已经全部加载完毕</span>
+		</div>	
     
     
   </div>
@@ -104,9 +112,9 @@ export default {
     return {
       sendDat:{size:3,page:1,cache:true},
       renderDat:[],
-      cutNumTxt:60,
-      loadLock:true,
-      loadShow:false
+      cutNumTxt:60,        //默认截取字数
+      loadLock:true,       //正在加载
+      loadShow:false       //加载完毕
     }
   },
   methods:{
@@ -126,6 +134,13 @@ export default {
             console.log("请求错误！");
           })
       },
+      /**
+       * [内容展开收起]
+       * @param  {[type]} val  [详细文章内容]
+       * @param  {[type]} item [每一条数据]
+       * @param  {[type]} evt  [点击事件]
+       * @return {[type]}      [description]
+       */
       showMoreTxt(val,item,evt){           //展开收起
           let $txtBox=$(evt.target).siblings(".box-txt");
           if(!item.showOnOff){
@@ -133,44 +148,32 @@ export default {
             $(evt.target).html("收起");
             item.showOnOff=true;
           }else{
-            $txtBox.html(this.cutTxtFun(val,this.cutNumTxt));
+            $txtBox.html(filter.cutTxtFun(val,this.cutNumTxt));
             item.showOnOff=false;
             $(evt.target).html("展开");
           }
       },
-      cutTxtFun(val,num){
-          if(!val){
-            return val;
-          }
-          let end="";
-          let sub_length = num ;
-          let temp1 = val.replace(/[^\x00-\xff]/g,"**");
-          let temp2 = temp1.substring(0,sub_length);
-          let x_length = temp2.split("\*").length - 1 ;
-          let hanzi_num = x_length /2 ;
-          sub_length = sub_length - hanzi_num ;  //实际需要sub的长度是总长度-汉字长度
-          let res = val.substring(0,sub_length);
-          if(!num){
-            return val;
-          }
-          if(sub_length < val.length ){
-             end =res+"..." ;
-          }else{
-             end = res ;
-          }
-          return end ;
-      },
+      /**
+       * [渲染数据处理]
+       * @param  {[type]} res [请求接收的数据]
+       * @return {[type]}     [description]
+       */
       renderSetDat(res){
+         if(res.data.length==0){
+            _this.loadShow=true;
+            _this.loadLock=true;
+            return;
+         }
          this.renderDat=this.renderDat.concat(res.data);
          this.renderDat.forEach((item,ind)=>{
                if(item.Type==10||item.Type==9){   //如果是视频和易车号，没有简介只有标题
-                  item.content=item.Title;
-                  item.more=false;
-                  item.contentLess=item.Title;     //没有内容只显示标题
+                    item.content=item.Title;
+                    item.more=false;
+                    item.contentLess=item.Title;     //没有内容时候只显示标题
                }else{
-                  item.more=true;
-                  item.content=item.Summary;
-                  item.contentLess=this.cutTxtFun(item.Summary,this.cutNumTxt);
+                   item.more=(filter.dataLength(item.Summary)>this.cutNumTxt)?true:false;
+                   item.content=item.Summary;
+                   item.contentLess=filter.cutTxtFun(item.Summary,this.cutNumTxt);
                }
                item.picArr=item.PicCover.split("|");
                item.picTuff=item.picArr.length>1?true:false;
@@ -189,18 +192,17 @@ export default {
           let $docH=$(document).height();
           let _this=this;
           $(document).on("scroll",function(){
-                 $scrollTop=$(this).scrollTop();
-                 $docH=$(document).height();
-                 if($scrollTop+$winH>=$docH-$winH/2){
-                    if(_this.loadLock){
-                        _this.sendDat.page+=1;
-                        _this.loadLock=false;
-                        _this.loadShow=true;
-                        setTimeout(()=>{
-                          _this.getData(_this.sendDat.page);
-                        },1000);
-                    }
-                 }
+               $scrollTop=$(this).scrollTop();
+               $docH=$(document).height();
+               if($scrollTop+$winH>=$docH){
+                  if(_this.loadLock && !_this.loadShow){
+                      _this.sendDat.page+=1;
+                      _this.loadLock=false;
+                      setTimeout(()=>{
+                        _this.getData(_this.sendDat.page);
+                      },1500);
+                  }
+               }
           })
       }
   },
