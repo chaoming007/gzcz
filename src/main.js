@@ -17,7 +17,7 @@ new Vue({
      })
   },
   components:{
-     Pic,
+     //Pic,
      List
   }
 })

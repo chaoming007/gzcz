@@ -41,6 +41,20 @@ export default{
           }       
       } 
       return intLength; 
+  },
+  /**
+   * [getQueryString 获得地址参数值]
+   * @param  {[type]} name [参数名]
+   * @return {[type]}      [description]
+   */
+  getQueryString(name){
+     let reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+     let r = window.location.search.substr(1).match(reg);
+     if(r!=null){
+       return  unescape(r[2]);
+     }else{
+       return null;
+     }    
   } 
 }
 /**
@@ -49,20 +63,36 @@ export default{
  */
 Vue.filter("timSet",(val)=>{
     let datNow=new Date().getTime();
-    let datNum=val.replace(/d+Td+/," ");
+    let num=val.indexOf(".")>-1?val.indexOf("."):val.length;
+    let setNow=val.substring(0,num);
+    let datNum=setNow.replace(/T/," ");
     let datVal=new Date(datNum).getTime();
     let resVal="";
-    if(datNow-datVal>=60*1000 && datNow-datVal<=2*60*1000){
-       resVal="一分钟前发布";
+    let timBad=datNow-datVal;   //时间差
+    if(timBad<hmFun(3600)){
+       setTimFun(timBad);
+    }else{
+      resVal=val.substring(0,setNow.indexOf("T"));
     }
-    if(datNow-datVal>2*60*1000 && datNow-datVal<=30*60*1000){
-       resVal=val.substring(val.indexOf("T")+1);
+    function setTimFun(t){
+      if(t>=hmFun(30) && t<hmFun(60)){
+         resVal="30秒前发布";
+         return;
+      }
+      for(let i=1;i<60;i++){
+          if(t>=hmFun(i*60) && t<hmFun((i+1)*60)){
+             resVal=i+"分钟前发布";
+             continue;
+          }
+      }
     }
-    if(datNow-datVal>30*60*1000){
-       resVal=val.substring(0,val.indexOf("T"));
+    function hmFun(v){
+       return v*1000;
     }
     return resVal;
 });
+
+
 Vue.filter("urlSet",(val)=>{
    return "http://m.yiche.com"+val;
 })
@@ -121,6 +151,9 @@ Vue.filter("picUrlSet",(val,type)=>{
         break;
       case 6: case 1:
         urlVal=val.replace(/\{0\}/,"_226_150_");
+        break;
+      case 20:
+        urlVal=val.replace(/\{0\}/,30);
         break;
     }
     return urlVal;

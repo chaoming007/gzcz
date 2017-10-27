@@ -53,8 +53,8 @@ export default {
             data: this.sendDat
           })
           .done((res)=>{
-            if(res.code==1){
-               this.renderDat=res.data;
+            if(res.code==1 && res.msg=="OK"){
+               this.renderDat=Object.assign({},res.data);
                this.commitFun(res.data);
             }
           })

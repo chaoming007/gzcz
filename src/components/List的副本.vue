@@ -39,12 +39,6 @@
         
         <!-- 用户信息 end  -->
         
-        
-        
-        
-        
-        
-        
         <!-- 信息流 start -->
         
         <div class="section-row">
@@ -111,8 +105,17 @@
 
     <!--块1 end-->
     
+    <!-- <div class="loaded-txt" v-show="!loadLock"> 
+			<span>加载更多</span>
+		</div> -->
     
-    <loadMore :dat="loadDat"></loadMore>
+    <div class="loading-txt" v-show="!loadLock">
+      <span>正在加载...</span>
+    </div>
+    
+    <div class="loaded-txt" v-show="loadShow">
+			<span>已经全部加载完毕</span>
+		</div>	
     
     
   </div>
@@ -122,7 +125,6 @@
 import datUrl from '../js/config.js'
 import filter from '../filter/filter.js'
 import loginFun from '../js/login.js'
-import loadMore from './loadMore.vue'
 
 
 export default {
@@ -131,16 +133,13 @@ export default {
       sendDat:{size:50,page:1,cache:true},  //信息流请求数据
       renderDat:[],
       timRenderDat:[],      //临时信息流数据
+      timUserDat:[],        //临时用户数据
+      loadLock:true,       //正在加载
+      loadShow:false,       //加载完毕
       usersArr:[],          //关注用户id集合
       testArr:[],             
       isLogin:false,         //是否已经登录
-      gzTuff:true,            //关注按钮控制
-      loadDat:{              //加载更多数据
-          page:1,
-          loadLock:true,
-          loadShow:false,
-          callBack:this.infoStreamGet
-      }         
+      gzTuff:true            //关注按钮控制
     }
   },
   methods:{
@@ -157,7 +156,6 @@ export default {
           })
       },
       infoStreamGet(page){         //信息流数据请求
-         this.loadDat.page=page;
          let getDat={
              url:datUrl.listUrlDat,
              data:{size:this.sendDat.size,page:page,cache:this.sendDat.cache},
@@ -364,13 +362,13 @@ export default {
                   item.picArr=item.picArr.slice(0,3);
                 }
           });
-          this.loadDat.loadLock=true;
+          this.loadLock=true;
       },
       
       infoSetDat(res){
          if(res.data.length==0){     //没有数据时候
-            this.loadDat.loadShow=true;
-            this.loadDat.loadLock=true;
+            this.loadShow=true;
+            this.loadLock=true;
             return;
          }
          this.timRenderDat=[...res.data];
@@ -384,15 +382,32 @@ export default {
           });
           uids=userIdArr.join(",");
           this.userInfoGet(uids);
-      }
+      },
 
+      loadMoreFun(){                   //上拉加载更多
+          let $scrollTop=0;
+          let $winH=$(window).height();
+          let $docH=$(document).height();
+          let _this=this;
+          $(document).on("scroll",function(){
+               $scrollTop=$(this).scrollTop();
+               $docH=$(document).height();
+               if($scrollTop+$winH>=$docH){
+                  if(_this.loadLock && !_this.loadShow){
+                      _this.sendDat.page+=1;
+                      _this.loadLock=false;
+                      setTimeout(()=>{
+                        _this.infoStreamGet(_this.sendDat.page);
+                      },1000);
+                  }
+               }
+          })
+      }
   },
   mounted(){
       this.isLogin=loginFun();
-      this.infoStreamGet(this.sendDat.page);  
-  },
-  components:{
-     loadMore
+      this.infoStreamGet(this.sendDat.page);
+      this.loadMoreFun();
   }
 
 }
