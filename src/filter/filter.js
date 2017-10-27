@@ -72,11 +72,11 @@ Vue.filter("timSet",(val)=>{
     if(timBad<hmFun(3600)){
        setTimFun(timBad);
     }else{
-      resVal=val.substring(0,setNow.indexOf("T"));
+      resVal=val.substring(setNow.indexOf("-"),setNow.indexOf("T"));
     }
     function setTimFun(t){
       if(t>=hmFun(30) && t<hmFun(60)){
-         resVal="30秒前发布";
+         resVal="刚刚";
          return;
       }
       for(let i=1;i<60;i++){

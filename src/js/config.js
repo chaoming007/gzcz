@@ -12,7 +12,7 @@ export default {
    //新闻信息流接口
    newsUrl:"http://m.yiche.com",                           //普通新闻
    ychVideo:"http://hao.m.yiche.com/video/",               //易车号视频
-   pic:"http://photo.m.yiche.com/exhibit/picture/{0}/0/",   //图集
+   pic:"http://photo.m.yiche.com/picture/{0}/0/",   //图集
    ychNews:"http://hao.m.yiche.com/wenzhang/",               //易车号新闻
    spzbVideo:"http://live.m.yiche.com/live/{0}.html"       //易车直播
    
