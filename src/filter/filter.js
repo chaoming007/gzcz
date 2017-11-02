@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import datUrl from '../js/config.js'
+import DAT_URL from '../js/config.js'
 
 export default{
   /**
@@ -67,30 +67,30 @@ export default{
        if(item.Type==12){                     //如果是易车号视频，
             item.content=item.Title;
             item.contentLess=item.Title;
-            item.aLink=datUrl.ychVideo+item.Id;       
+            item.aLink=DAT_URL.ychVideo+item.Id;       
        }
        if(item.Type==10){                    //如果是易车号文章
            item.content=item.Title;
            item.contentLess=item.Title;
-           item.aLink=datUrl.ychNews+item.EntityId;        
+           item.aLink=DAT_URL.ychNews+item.EntityId;        
        }
        if(item.Type==9){                    //如果是视频直播   
            item.content=item.Title;
            item.contentLess=item.Title;
-           item.aLink=datUrl.spzbVideo.replace(/\{0\}/g,item.Id); 
-           item.liveStatus = { 
+           item.aLink=DAT_URL.spzbVideo.replace(/\{0\}/g,item.Id); 
+           item.liveStatusSet = { 
               1:{ "text":"预告","css":"living" },
               2:{ "text":"直播中","css":"living"},
               3:{ "text":"回放","css":"lived"}
-           }
+           }[item.LiveStatus]
        }
        if(item.Type==4){                    //如果是图集   时候只显示车系名
           item.content=item.CsName;
           item.contentLess=item.CsName;   
-          item.aLink=datUrl.pic.replace(/\{0\}/g,item.Id); 
+          item.aLink=DAT_URL.pic.replace(/\{0\}/g,item.Id); 
        }
        if(item.Type==1){                   //如果是普通新闻
-          item.aLink=datUrl.newsUrl+item.Url;
+          item.aLink=DAT_URL.newsUrl+item.Url;
        }                                     
        if(item.userInfo){               //是否显示关注的用户
           item.userTuff=true;

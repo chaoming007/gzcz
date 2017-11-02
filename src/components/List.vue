@@ -44,6 +44,7 @@
                       </a>
                       <a :href="item.aLink"  target="_blank" class="img-box">
                         <i class="icon-video" v-show="item.Type==12||item.Type==9"></i>
+                        <span v-if="item.Type==9"  :class="item.liveStatusSet['css']">{{item.liveStatusSet['text']}}</span>
                         <img :src="item.PicCover | picUrlSet(item.Type)" />
                       </a>
                       <!-- 发布信息 start   -->
