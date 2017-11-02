@@ -6,6 +6,7 @@
     <meta content="black" name="apple-mobile-web-app-status-bar-style">
     <meta content="telephone=no" name="format-detection">
     <title></title>
+    <link rel="stylesheet" href="/src/css/头部控件.css">
     <link rel="stylesheet" href="/src/css/style-css.css">
   </head>
   <body>
@@ -16,7 +17,7 @@
   
 		<!--全屏图 start -->
 		
-       <!-- <Pic></Pic> -->
+       <Pic :cslist="cslist"></Pic>
     
     
     <!-- 全屏图 end   -->
@@ -25,11 +26,13 @@
 		<!--车型列表 start-->
 
     <!--块 start-->
-		   <List></List>
+		   <List :cslist="cslist"></List>
 		<!--块 end-->
     
  
 		<!--车型列表 end-->
+    
+    
 		<!--提示层 start-->
     
 		<div class="hint-section" id="warnInfo" style="display: none;">
@@ -40,8 +43,7 @@
     
 		<!--提示层 end-->
     
-    
-  
+
     
     </div>
 

@@ -1,6 +1,7 @@
-export default function loginFun(){
-    let isLogin="";
+export default function loginFun(callBack){
+    var isLogin="";
     Bitauto.Login.LoginOptions.userInfoKey='';
+    // Bitauto.Login.LoginOptions.isCheckUserStateByCookie=false;
     Bitauto.Login.onComplatedHandlers.push(function(loginResult){
         	// 是否登录
         	// loginResult={
@@ -10,12 +11,11 @@ export default function loginFun(){
         	// }
           isLogin=loginResult;
         	if(loginResult.isLogined){
-              
+              console.log("已经登录");
         	}else{
-              
+              console.log("没有登录");
         	}
-
+          callBack(loginResult);  
     });
     Bitauto.Login.init();
-    return isLogin;
 }

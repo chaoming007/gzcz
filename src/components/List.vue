@@ -5,10 +5,11 @@
     <div class="section-item" v-for="(item,ind) in renderDat">
       
       
-      <div class="section-warp" v-if="item.userTuff">
+      <!-- <div class="section-warp" v-if="item.userTuff"> -->
+        <div class="section-warp">
         
         <!-- 用户信息 start   -->
-        <User :userdat="item"></User>
+        <User :userdat="item" :logdat="isLogin"></User>
         <!-- 用户信息 end  -->
 
         <!-- 信息流 start -->
@@ -35,35 +36,34 @@
               </div>
               
           <!-- 图片列表 end   -->
-  
-          <!-- 新闻流 start   -->
-              <div class="info-photo"  v-else>
-                    <a class="ref" :href="item.aLink" target="_blank">
-                      <h6><span class="box-txt">{{item.contentLess}}</span></h6>
-                    </a>
-                    <a :href="item.aLink"  target="_blank" class="img-box">
-                      <i class="icon-video" v-show="item.Type==12||item.Type==9"></i>
-                      <img :src="item.PicCover | picUrlSet(item.Type)" />
-                    </a>
-                    <!-- 发布信息 start   -->
-                       <p href="###" class="info-photo-brand">
-                         <em class="time">{{item.EntityPublishTime|timSet}}</em>
-                       </p>
-                    <!-- 发布信息 end   -->
-              </div>
-          <!-- 新闻流 end   -->
+      
+              <!-- 新闻流 start   -->
+                <div class="info-photo"  v-else>
+                      <a class="ref" :href="item.aLink" target="_blank">
+                        <h6><span class="box-txt">{{item.contentLess}}</span></h6>
+                      </a>
+                      <a :href="item.aLink"  target="_blank" class="img-box">
+                        <i class="icon-video" v-show="item.Type==12||item.Type==9"></i>
+                        <img :src="item.PicCover | picUrlSet(item.Type)" />
+                      </a>
+                      <!-- 发布信息 start   -->
+                         <p href="###" class="info-photo-brand">
+                           <em class="time">{{item.EntityPublishTime|timSet}}</em>
+                         </p>
+                      <!-- 发布信息 end   -->
+                </div>
+              <!-- 新闻流 end   -->
           
-          <!-- 文字流 start   -->
-          <div class="section-row img-list-set" v-if="item.txtTuff">
-  					  <p class="txt"><span class="box-txt">{{item.contentLess}}</span><a href="###" class="lnk"></a></p>
-              <!-- 发布信息 start   -->
-                 <p href="###" class="info-photo-brand">
-                   <em class="time">{{item.EntityPublishTime|timSet}}</em>
-                  
-                 </p>
-              <!-- 发布信息 end   -->
-  				</div>
-          <!-- 文字流 end   -->
+              <!-- 文字流 start   -->
+              <div class="section-row img-list-set" v-if="item.txtTuff">
+          					  <p class="txt"><span class="box-txt">{{item.contentLess}}</span><a href="###" class="lnk"></a></p>
+                      <!-- 发布信息 start   -->
+                         <p href="###" class="info-photo-brand">
+                           <em class="time">{{item.EntityPublishTime|timSet}}</em>
+                         </p>
+                      <!-- 发布信息 end   -->
+      				</div>
+              <!-- 文字流 end   -->
               
         </div>
         
@@ -83,7 +83,7 @@
 </template>
 
 <script>
-import datUrl from '../js/config.js'
+import DAT_URL from '../js/config.js'
 import filter from '../filter/filter.js'
 import loginFun from '../js/login.js'
 import loadMore from './loadMore.vue'
@@ -93,20 +93,22 @@ import User from './User.vue'
 export default {
   data () {
     return {
-      sendDat:{size:50,page:1,cache:true},  //信息流请求数据
+      sendDat:{size:DAT_URL.PAGE_SIZE,page:DAT_URL.PAGE_NUM,cache:DAT_URL.CACHE},  //信息流请求数据
       renderDat:[],
       timRenderDat:[],      //临时信息流数据
-      usersArr:[],          //关注用户id集合
-      testArr:[],             
+      usersArr:[],          //关注用户id集合          
       isLogin:false,         //是否已经登录
       gzTuff:true,            //关注按钮控制
       loadDat:{              //加载更多数据
-          page:1,
-          loadLock:true,
-          loadShow:false,
-          callBack:this.infoStreamGet
+        page:DAT_URL.PAGE_NUM,  //默认加载第一页
+        loadLock:true,
+        loadShow:false,
+        callBack:this.infoStreamGet
       }         
     }
+  },
+  props:{
+    "cslist":String
   },
   methods:{
       /**
@@ -124,8 +126,8 @@ export default {
       infoStreamGet(page){         //信息流数据请求
          this.loadDat.page=page;
          let getDat={
-             url:datUrl.listUrlDat,
-             data:{size:this.sendDat.size,page:page,cache:this.sendDat.cache},
+             url:DAT_URL.LIST_URL_DAT,
+             data:{size:this.sendDat.size,page:page,cache:this.sendDat.cache,cslist:this.cslist},
              type:"GET",
              dataType:"jsonp",
              jsonp:'callback',
@@ -135,7 +137,7 @@ export default {
       },
       userInfoGet(dat){           //用户信息请求
          let getDat={
-            url:datUrl.userUrlDat+"&uids="+dat,   //"1202614,6476",
+            url:DAT_URL.USER_URL_DAT+"&uids="+dat,   //"1202614,6476",
             type:"GET",
             dataType:"jsonp",
             jsonp:'callback',
@@ -150,110 +152,68 @@ export default {
             if(res[key]){
               if(item.UserId===res[key].uid){
                  item.userInfo=res[key];
-                 this.usersArr.push(item);
+                 this.usersArr.push(item.UserId);
               }
             }
           });
-          this.testArr=[...this.usersArr];                           //测试
-          this.usersArr=[2963544,2963550,2963720,2963625,2963626];   //测试
           
-          
-          if(this.testArr.length>=1){
+          if(this.usersArr.length>=1){
               uid=this.usersArr.join(",");
               this.gzInfoGet(uid);    //关注请求
           }else{
               this.renderDatSet(this.timRenderDat);
           }    
       },
-      gzInfoGet(id){            //关注请求
-          let getDat={
-               url:datUrl.watchUrlDat+"?uids="+id,
-               type:"GET",
-               dataType:"jsonp",
-               jsonp:'callback',
-               callback:this.isWatchFun
+      gzInfoGet(id){            //是否被关注请求
+          if(this.isLogin.isLogined){            //如果没有登录
+              let getDat={
+                 url:DAT_URL.WATCH_URL_DAT+"?uids="+id,
+                 type:"GET",
+                 dataType:"jsonp",
+                 jsonp:'callback',
+                 callback:this.isWatchFun
+              }
+              this.getDataFun(getDat);
+          }else{
+              let dat={status:true};
+              this.isWatchFun(dat);
           }
-          this.getDataFun(getDat);
       },  
       isWatchFun(dat){                 //关注回调
-          if(dat.status==true){
+        if(dat.status==true){
             this.timRenderDat.forEach((item,key)=>{
-                //console.log(this.isLogin.isLogined);
-                if(this.isLogin.isLogined){              //是否登录
-                        dat.data.forEach((item1,key1)=>{
-                              if(item.UserId===item1.uid){
-                                  if(dat.data[key].attentionstatus==0){
-                                      item.attentionstatus=0;            //0为没有关注
-                                  }else{
-                                      item.attentionstatus=1;            //1为已经关注
-                                  }
-                              }else{
-                                 item.attentionstatus=0;
-                              }    
-                        })
+                if(this.isLogin.isLogined){              //是否登录    
+                    dat.data.forEach((item1,key1)=>{
+                      if(item.UserId===item1.uid){
+                        if(item1.attentionstatus==0){  //attentionstatus
+                          item.attentionstatus=0;    //0为没有关注
+                        }else{
+                          item.attentionstatus=1;    //1为已经关注
+                        }
+                      }else{
+                        item.attentionstatus=0;
+                      }    
+                    })
                 }else{
-                      item.attentionstatus=0;         //未登录只显示关注按钮
+                    item.attentionstatus=0;         //未登录只显示关注按钮
                 } 
             })
-          }else{
+            
+        }else{
             throw error("请求错误！");
-          }
-          this.renderDatSet(this.timRenderDat);  
+        }
+        this.renderDatSet(this.timRenderDat);  
       },
-    
       /**
        * [渲染数据处理]
        * @param  {[type]} res [请求接收的数据]
        * @return {[type]}     [description]
        */
       
-      renderDatSet(res){  //渲染数据逻辑处理
-        
-          this.renderDat=this.renderDat.concat(res);
-          this.renderDat.forEach((item,ind)=>{
-   
-                item.content=item.Summary;             //没有图片时候显示内容
-                item.contentLess=item.Summary;
-
-                if(item.Type==12){                     //如果是易车号视频，
-                     item.content=item.Title;
-                     item.contentLess=item.Title;
-                     item.aLink=datUrl.ychVideo+item.Id;       
-                }
-                if(item.Type==10){                    //如果是易车号文章
-                    item.content=item.Title;
-                    item.contentLess=item.Title;
-                    item.aLink=datUrl.ychNews+item.Id;        
-                }
-                if(item.Type==9){                    //如果是视频直播
-                    item.content=item.Title;
-                    item.contentLess=item.Title;
-                    item.aLink=datUrl.spzbVideo.replace(/\{0\}/,item.Id);        
-                }
-                if(item.Type==4){                    //如果是图集   时候只显示车系名
-                     item.content=item.CsName;
-                     item.contentLess=item.CsName;   
-                     item.aLink=datUrl.pic.replace(/\{0\}/,item.Id); 
-                }
-                if(item.Type==1){                   //如果是普通新闻
-                     item.aLink=datUrl.newsUrl+item.Url;
-                }
-                
-                                               
-                if(item.userInfo){               //是否显示关注的用户
-                   item.userTuff=true;
-                }else{
-                   item.userTuff=false;
-                }
-                                
-                item.picArr=item.PicCover.split("|");            //多张图片得时候
-                item.picTuff=item.picArr.length>1?true:false;
-                item.txtTuff=item.picArr.length<1?true:false;   //只有文字没有图片
-
-                if(item.picArr.length>3){           //展示图超过三个的时候
-                  item.picNum=item.picArr.length;
-                  item.picArr=item.picArr.slice(0,3);
-                }
+      renderDatSet(res){  //渲染数据逻辑处理  
+          this.renderDat=this.renderDat.concat(res);    
+          this.renderDat.forEach((item,ind)=>{ 
+              item=filter.formatDatFun(item);
           });
           this.loadDat.loadLock=true;
       },
@@ -275,12 +235,14 @@ export default {
           });
           uids=userIdArr.join(",");
           this.userInfoGet(uids);
+      },
+      vLoginFun(v){        //验证是否登录
+          this.isLogin=Object.assign({},v);
+          this.infoStreamGet(this.sendDat.page);  
       }
-
   },
   mounted(){
-      this.isLogin=loginFun();
-      this.infoStreamGet(this.sendDat.page);  
+      loginFun(this.vLoginFun);  
   },
   components:{
      loadMore,

@@ -3,8 +3,9 @@
     
     <!--导航头 start -->
     <div class="header-section">
-      <a href="###" class="go"></a>
+      <a id="gobackElm" href="javascript:;" class="btn-return go"></a>
       <h2>{{renderDat.Name}}</h2>
+      <!--#include file="/include/z/gzcz/2017/wap/00001/201711_gzcz_wap_ejggt_Manual.shtml "-->
     </div>
     <!-- 导航头 end   -->
     
@@ -32,19 +33,22 @@
 </template>
 
 <script>
-import datUrl from '../js/config.js'
+import DAT_URL from '../js/config.js'
 
 export default {
   data () {
     return {
-      sendDat:{eid:19,sid:2614},
+      sendDat:{eid:229,sid:this.cslist},
       renderDat:""
     }
+  },
+  props:{
+    "cslist":String
   },
   methods:{
       getData(){   
           $.ajax({
-            url: datUrl.picUrlDat,
+            url: DAT_URL.PIC_URL_DAT,
             type: 'GET',
             cache:false,
             dataType: 'jsonp',

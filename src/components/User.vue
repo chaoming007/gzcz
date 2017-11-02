@@ -3,7 +3,7 @@
        <!-- 用户信息 start   -->
        
              <div class="section-row" v-if="item.userTuff">
-                 <a href="###" class="person-txt">
+                 <a :href="userCenterLink" class="person-txt" target="_blank">
                    <div class="img-box">
                      <i class="v"></i>
                      <img :src="'http:'+item.userInfo.avatarpath|picUrlSet(20)" />
@@ -32,11 +32,13 @@
              </div>
              
        <!-- 用户信息 end   -->
+       
+       
   </div>
 </template>
 
 <script>
-import datUrl from '../js/config.js'
+import DAT_URL from '../js/config.js'
 import filter from '../filter/filter.js'
 import loginFun from '../js/login.js'
 
@@ -44,10 +46,11 @@ export default {
   data(){
     return {
       item:this.userdat,     //用户数据
-      isLogin:false,         //是否已经登录
+      userCenterLink:DAT_URL.userCenter+this.userdat.UserId,           //用户个人中心
+      isLogin:{},         //是否已经登录
     }
   },
-  props:["userdat"],                 
+  props:["userdat","logdat"],                 
   methods:{
     getDataFun(dat){              //关注请求
         $.ajax(dat).done((res)=>{
@@ -57,12 +60,12 @@ export default {
         })
     },
     addWatchDat(dat,evt){       //增加关注事件
-        if(!this.isLogin.isLogined){                            //如果没有登录
-            $(".lnk-attention").attr("href",datUrl.loginUrl);
+        if(!this.isLogin.isLogined){                   //如果没有登录
+            $(".lnk-attention").attr("href",DAT_URL.loginUrl);
             return;
         }    
         let getDat={
-            url:datUrl.addWatchDat+"?tid="+2963626,
+            url:DAT_URL.ADD_WATCH_DAT+"?tid="+this.item.UserId,
             dataType:"json",
             type:"POST",
             cache:false,
@@ -98,8 +101,12 @@ export default {
        })       
     },
     delWatchDat(id,evt){       //取消关注事件
+        if(!this.isLogin.isLogined){                   //如果没有登录
+            $(".lnk-attention").attr("href",DAT_URL.loginUrl);
+            return;
+        }    
         let getDat={
-            url:datUrl.delWatchDat+"?tid="+2963626,
+            url:DAT_URL.DEL_WATCH_DAT+"?tid="+this.item.UserId,
             cache:false,
             dataType:"json",
             type:"POST",
@@ -131,7 +138,7 @@ export default {
   
   },
   mounted(){
-      this.isLogin=loginFun();
+      this.isLogin=Object.assign({},this.logdat);
   }
 }
 </script>

@@ -1,4 +1,6 @@
 import Vue from 'vue'
+import datUrl from '../js/config.js'
+
 export default{
   /**
    * [内容截取，当内容为空的时候直接返回]
@@ -55,7 +57,62 @@ export default{
      }else{
        return null;
      }    
-  } 
+  },
+  
+  formatDatFun(item){
+    
+       item.content=item.Summary;             //没有图片时候显示内容
+       item.contentLess=item.Summary;
+
+       if(item.Type==12){                     //如果是易车号视频，
+            item.content=item.Title;
+            item.contentLess=item.Title;
+            item.aLink=datUrl.ychVideo+item.Id;       
+       }
+       if(item.Type==10){                    //如果是易车号文章
+           item.content=item.Title;
+           item.contentLess=item.Title;
+           item.aLink=datUrl.ychNews+item.EntityId;        
+       }
+       if(item.Type==9){                    //如果是视频直播   
+           item.content=item.Title;
+           item.contentLess=item.Title;
+           item.aLink=datUrl.spzbVideo.replace(/\{0\}/g,item.Id); 
+           item.liveStatus = { 
+              1:{ "text":"预告","css":"living" },
+              2:{ "text":"直播中","css":"living"},
+              3:{ "text":"回放","css":"lived"}
+           }
+       }
+       if(item.Type==4){                    //如果是图集   时候只显示车系名
+          item.content=item.CsName;
+          item.contentLess=item.CsName;   
+          item.aLink=datUrl.pic.replace(/\{0\}/g,item.Id); 
+       }
+       if(item.Type==1){                   //如果是普通新闻
+          item.aLink=datUrl.newsUrl+item.Url;
+       }                                     
+       if(item.userInfo){               //是否显示关注的用户
+          item.userTuff=true;
+       }else{
+          item.userTuff=false;
+       }
+       if(item.PicCover.length>0 && item.PicCover!=null){
+         item.picArr=item.PicCover.split("|");            //多张图片得时候
+       }else{
+         item.picArr=[];
+       }              
+       
+       item.picTuff=item.picArr.length>1?true:false;
+       item.txtTuff=item.picArr.length<1?true:false;   //只有文字没有图片
+
+       if(item.picArr.length>3){           //展示图超过三个的时候
+         item.picNum=item.picArr.length;
+         item.picArr=item.picArr.slice(0,3);
+       }
+       return item;
+  }
+  
 }
 /**
  * [时间格式化过滤器]
@@ -72,7 +129,7 @@ Vue.filter("timSet",(val)=>{
     if(timBad<hmFun(3600)){
        setTimFun(timBad);
     }else{
-      resVal=val.substring(setNow.indexOf("-"),setNow.indexOf("T"));
+      resVal=val.substring(setNow.indexOf("-")+1,setNow.indexOf("T"));
     }
     function setTimFun(t){
       if(t>=hmFun(30) && t<hmFun(60)){
@@ -91,7 +148,6 @@ Vue.filter("timSet",(val)=>{
     }
     return resVal;
 });
-
 
 Vue.filter("urlSet",(val)=>{
    return "http://m.yiche.com"+val;
@@ -144,16 +200,16 @@ Vue.filter("picUrlSet",(val,type)=>{
     let urlVal=val;
     switch(type){
       case 9: case 10: case 12: case 2:
-        urlVal=val.replace(/\{0\}/,"newsimg_690x380");
+        urlVal=val.replace(/\{0\}/g,"newsimg_690x380");
         break;
       case 4:
-        urlVal=val.replace(/\{0\}/,3);
+        urlVal=val.replace(/\{0\}/g,3);
         break;
       case 6: case 1:
-        urlVal=val.replace(/\{0\}/,"_226_150_");
+        urlVal=val.replace(/\{0\}/g,"_226_150_");
         break;
       case 20:
-        urlVal=val.replace(/\{0\}/,30);
+        urlVal=val.replace(/\{0\}/g,30);
         break;
     }
     return urlVal;
