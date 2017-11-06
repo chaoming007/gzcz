@@ -60,56 +60,61 @@ export default{
   },
   
   formatDatFun(item){
-    
-       item.content=item.Summary;             //没有图片时候显示内容
-       item.contentLess=item.Summary;
+       item.content=item.Title;             //没有图片时候显示内容
+       item.contentLess=item.Title;
+       item.picTuff=false;
+       if(item.PicCover.length>0 && item.PicCover!=null){
+         item.picArr=item.PicCover.split("|");            //多张图片得时候
+       }else{
+         item.picArr=[];
+       }      
 
        if(item.Type==12){                     //如果是易车号视频，
-            item.content=item.Title;
-            item.contentLess=item.Title;
             item.aLink=DAT_URL.ychVideo+item.Id;       
        }
+       
+       if(item.Type==1){                   //如果是普通新闻
+          item.aLink=DAT_URL.newsUrl+item.Url;
+          item.PicCover=item.picArr[0]?item.picArr[0]:"";
+       }        
        if(item.Type==10){                    //如果是易车号文章
-           item.content=item.Title;
-           item.contentLess=item.Title;
-           item.aLink=DAT_URL.ychNews+item.EntityId;        
+          item.aLink=DAT_URL.ychNews+item.EntityId;
+          item.PicCover=item.picArr[0]?item.picArr[0]:"";        
        }
+       
        if(item.Type==9){                    //如果是视频直播   
-           item.content=item.Title;
-           item.contentLess=item.Title;
-           item.aLink=DAT_URL.spzbVideo.replace(/\{0\}/g,item.Id); 
+           item.aLink=DAT_URL.spzbVideo.replace(/\{0\}/g,item.EntityId); 
            item.liveStatusSet = { 
               1:{ "text":"预告","css":"living" },
               2:{ "text":"直播中","css":"living"},
               3:{ "text":"回放","css":"lived"}
            }[item.LiveStatus]
        }
-       if(item.Type==4){                    //如果是图集   时候只显示车系名
+       if(item.Type==4 || item.Type==5){                    //如果是图集   时候只显示车系名
           item.content=item.CsName;
           item.contentLess=item.CsName;   
-          item.aLink=DAT_URL.pic.replace(/\{0\}/g,item.Id); 
+          item.aLink=DAT_URL.pic.replace(/\{0\}/g,item.Url); 
+          item.picTuff=true;
        }
-       if(item.Type==1){                   //如果是普通新闻
-          item.aLink=DAT_URL.newsUrl+item.Url;
-       }                                     
+                                 
        if(item.userInfo){               //是否显示关注的用户
           item.userTuff=true;
        }else{
           item.userTuff=false;
        }
-       if(item.PicCover.length>0 && item.PicCover!=null){
-         item.picArr=item.PicCover.split("|");            //多张图片得时候
-       }else{
-         item.picArr=[];
-       }              
-       
-       item.picTuff=item.picArr.length>1?true:false;
-       item.txtTuff=item.picArr.length<1?true:false;   //只有文字没有图片
 
-       if(item.picArr.length>3){           //展示图超过三个的时候
+       item.txtTuff=item.picArr.length<1?true:false;   //只有文字没有图片
+       
+       if(item.picArr.length>3){                      //展示图超过三个的时候
          item.picNum=item.picArr.length;
          item.picArr=item.picArr.slice(0,3);
        }
+       
+       if(isApp()){                                  //如果是app
+          item.aLink=callApp(item.Id,item.Type);
+       }
+       
+       
        return item;
   }
   
@@ -213,4 +218,7 @@ Vue.filter("picUrlSet",(val,type)=>{
         break;
     }
     return urlVal;
+})
+Vue.filter("bigPicSet",(val)=>{
+    return val&&val.replace(/_1\./g,"_3.");  
 })

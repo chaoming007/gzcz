@@ -9,15 +9,11 @@ export default {
    PAGE_NUM:1,    //默认加载第几页
    PAGE_SIZE:7,    //每页条数
    CACHE:true,     
-   
-   //登录页面地址
-   
-   loginUrl:"http://m.yiche.com",
-   
+  
    //新闻信息流接口
    newsUrl:"http://m.yiche.com",                           //普通新闻
    ychVideo:"http://hao.m.yiche.com/video/",               //易车号视频
-   pic:"http://photo.m.yiche.com/picture/{0}/0/",          //图集
+   pic:"http://photo.m.yiche.com{0}",                      //图集
    ychNews:"http://hao.m.yiche.com/wenzhang/",               //易车号新闻
    spzbVideo:"http://live.m.yiche.com/live/{0}.html",       //易车直播
    userCenter:"http://i.m.yiche.com/u"                     //易车号人物个人中心

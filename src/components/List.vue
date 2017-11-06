@@ -98,7 +98,7 @@ export default {
       renderDat:[],
       timRenderDat:[],      //临时信息流数据
       usersArr:[],          //关注用户id集合          
-      isLogin:false,         //是否已经登录
+      isLogin:{},         //是否已经登录
       gzTuff:true,            //关注按钮控制
       loadDat:{              //加载更多数据
         page:DAT_URL.PAGE_NUM,  //默认加载第一页
@@ -243,7 +243,9 @@ export default {
       }
   },
   mounted(){
-      loginFun(this.vLoginFun);  
+      //loginFun(this.vLoginFun);
+      this.isLogin.isLogined=false;    //GlobalIsLogin;   
+      this.vLoginFun(this.isLogin);
   },
   components:{
      loadMore,

@@ -2,15 +2,12 @@
   <div>
     
     <!--导航头 start -->
-    <div class="header-section">
-      <a id="gobackElm" href="javascript:;" class="btn-return go"></a>
-      <h2>{{renderDat.Name}}</h2>
+    
       <!--#include file="/include/z/gzcz/2017/wap/00001/201711_gzcz_wap_ejggt_Manual.shtml "-->
-    </div>
     <!-- 导航头 end   -->
     
      <div class="full-screen-section">
-      <img :src="renderDat.CoverImage" />
+      <img :src="renderDat.CoverImage|bigPicSet" />
       <div class="b-info">
         <span class="r-txt icon-photo">{{renderDat.AlbumCount}}</span>
       </div>
@@ -34,6 +31,7 @@
 
 <script>
 import DAT_URL from '../js/config.js'
+import filter from '../filter/filter.js'
 
 export default {
   data () {
@@ -68,6 +66,7 @@ export default {
       },
       commitFun(dat){
          Event.$emit("setTit",dat);
+         $(".header15>h2").html(dat.Name);
       }
   },
   mounted(){

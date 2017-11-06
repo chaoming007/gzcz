@@ -52,16 +52,17 @@ export default {
   },
   props:["userdat","logdat"],                 
   methods:{
-    getDataFun(dat){              //关注请求
+    getDataFun(dat,evt){              //关注请求
         $.ajax(dat).done((res)=>{
-          dat.callback(res);
+          dat.callback(res,evt);
         }).fail(()=>{
             console.log("请求错误！");
         })
     },
     addWatchDat(dat,evt){       //增加关注事件
         if(!this.isLogin.isLogined){                   //如果没有登录
-            $(".lnk-attention").attr("href",DAT_URL.loginUrl);
+            //$(".lnk-attention").attr("href",DAT_URL.loginUrl);
+            gotoLogin();
             return;
         }    
         let getDat={
@@ -72,13 +73,15 @@ export default {
             xhrFields: { withCredentials: true},
             callback:this.addWatchFun
         }
-        this.getDataFun(getDat);
-        this.showHideFun(evt);
-        this.warnInfoFun("关注成功！");
+        this.getDataFun(getDat,evt);
     },
-    addWatchFun(dat){
+    addWatchFun(dat,evt){
         if(dat=="ok"){
            console.log("关注成功");
+           this.warnInfoFun("关注成功！");
+           this.showHideFun(evt);
+        }else{
+           this.warnInfoFun("关注失败！");
         }
     },
     showHideFun(evt){     //关注按钮切换
@@ -113,9 +116,8 @@ export default {
             xhrFields: { withCredentials: true},
             callback:this.delWatchFun
         }
-        this.getDataFun(getDat);
-        this.showGzFun(evt);
-        this.warnInfoFun("取消关注成功！");
+        this.getDataFun(getDat,evt);
+        
     },
     showGzFun(evt){
        let tag=$(evt.target).parent().parent();
@@ -126,6 +128,10 @@ export default {
     delWatchFun(dat){
       if(dat=="ok"){
          console.log("取消成功！");
+         this.warnInfoFun("取消关注成功！");
+         this.showGzFun(evt);
+      }else{
+         this.warnInfoFun("取消关注失败！");
       }
     },
     warnInfoFun(txt){

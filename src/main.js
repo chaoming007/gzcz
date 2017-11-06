@@ -16,7 +16,7 @@ new Vue({
     }
   },
   created(){
-     this.cslist=Filter.getQueryString("cslist");  
+     this.cslist=Filter.getQueryString("sid");  
   },
   mounted(){
      Event.$on("setTit",h=>{
