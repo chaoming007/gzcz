@@ -105,7 +105,7 @@ export default {
     },
     delWatchDat(id,evt){       //取消关注事件
         if(!this.isLogin.isLogined){                   //如果没有登录
-            $(".lnk-attention").attr("href",DAT_URL.loginUrl);
+            gotoLogin();
             return;
         }    
         let getDat={

@@ -1,5 +1,5 @@
 export default {
-   PIC_URL_DAT:"http://api174.car.bitauto.com//Exhibition/GetExhibitionSerial.ashx", //顶通图片数据
+   PIC_URL_DAT:"http://api.car.bitauto.com//Exhibition/GetExhibitionSerial.ashx", //顶通图片数据
    LIST_URL_DAT:"http://api.admin.bitauto.com/aggr/api/chezhan/list/1",             //信息流接口
    USER_URL_DAT:"http://api.i.yiche.com/clientapi/DataCenter?keys=showname,avatarpath,fanscount,roles",   //用户信息数据
    WATCH_URL_DAT:"http://clientapi.yiche.com/friend/IsAttentioned", //是否关注接口

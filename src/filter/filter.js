@@ -63,6 +63,7 @@ export default{
        item.content=item.Title;             //没有图片时候显示内容
        item.contentLess=item.Title;
        item.picTuff=false;
+       
        if(item.PicCover.length>0 && item.PicCover!=null){
          item.picArr=item.PicCover.split("|");            //多张图片得时候
        }else{

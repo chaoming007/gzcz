@@ -244,7 +244,7 @@ export default {
   },
   mounted(){
       //loginFun(this.vLoginFun);
-      this.isLogin.isLogined=false;    //GlobalIsLogin;   
+      this.isLogin.isLogined=GlobalIsLogin;    //GlobalIsLogin;   
       this.vLoginFun(this.isLogin);
   },
   components:{
