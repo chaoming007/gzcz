@@ -1,6 +1,6 @@
 export default {
    PIC_URL_DAT:"http://api.car.bitauto.com//Exhibition/GetExhibitionSerial.ashx", //顶通图片数据
-   LIST_URL_DAT:"http://api.admin.bitauto.com/aggr/api/chezhan/list/1",             //信息流接口
+   LIST_URL_DAT:"http://api.admin.bitauto.com/aggr/api/chezhan/list/16",             //信息流接口
    USER_URL_DAT:"http://api.i.yiche.com/clientapi/DataCenter?keys=showname,avatarpath,fanscount,roles",   //用户信息数据
    WATCH_URL_DAT:"http://clientapi.yiche.com/friend/IsAttentioned", //是否关注接口
    ADD_WATCH_DAT:"http://clientapi.yiche.com/friend/Attention",      //添加关注接口
@@ -12,6 +12,7 @@ export default {
   
    //新闻信息流接口
    newsUrl:"http://m.yiche.com",                           //普通新闻
+   spsqVideo:"http://vc.m.yiche.com",                   //视频社区
    ychVideo:"http://hao.m.yiche.com/video/",               //易车号视频
    pic:"http://photo.m.yiche.com{0}",                      //图集
    ychNews:"http://hao.m.yiche.com/wenzhang/",               //易车号新闻

@@ -82,7 +82,9 @@ export default{
           item.aLink=DAT_URL.ychNews+item.EntityId;
           item.PicCover=item.picArr[0]?item.picArr[0]:"";        
        }
-       
+       if(item.Type==3){                    //如果是视频社区
+          item.aLink=DAT_URL.spsqVideo+item.Url;
+       }
        if(item.Type==9){                    //如果是视频直播   
            item.aLink=DAT_URL.spzbVideo.replace(/\{0\}/g,item.EntityId); 
            item.liveStatusSet = { 
@@ -205,7 +207,7 @@ Vue.filter("bbsSet",(val)=>{
 Vue.filter("picUrlSet",(val,type)=>{
     let urlVal=val;
     switch(type){
-      case 9: case 10: case 12: case 2:
+      case 9: case 10: case 12: case 2: case 3:
         urlVal=val.replace(/\{0\}/g,"newsimg_690x380");
         break;
       case 4:
