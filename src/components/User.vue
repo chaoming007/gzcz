@@ -47,7 +47,7 @@ export default {
     return {
       item:this.userdat,     //用户数据
       userCenterLink:DAT_URL.userCenter+this.userdat.UserId,           //用户个人中心
-      isLogin:{},         //是否已经登录
+      isLogin:"",         //是否已经登录
     }
   },
   props:["userdat","logdat"],                 
@@ -60,8 +60,7 @@ export default {
         })
     },
     addWatchDat(dat,evt){       //增加关注事件
-        if(!this.isLogin.isLogined){                   //如果没有登录
-            //$(".lnk-attention").attr("href",DAT_URL.loginUrl);
+        if(!isLogin){                   //如果没有登录
             gotoLogin();
             return;
         }    
@@ -104,7 +103,7 @@ export default {
        })       
     },
     delWatchDat(id,evt){       //取消关注事件
-        if(!this.isLogin.isLogined){                   //如果没有登录
+        if(!isLogin){                   //如果没有登录
             gotoLogin();
             return;
         }    
@@ -125,7 +124,7 @@ export default {
        tag.hide();
        tag.siblings().show();
     },
-    delWatchFun(dat){
+    delWatchFun(dat,evt){
       if(dat=="ok"){
          console.log("取消成功！");
          this.warnInfoFun("取消关注成功！");
@@ -144,7 +143,8 @@ export default {
   
   },
   mounted(){
-      this.isLogin=Object.assign({},this.logdat);
+      // console.log(this.userdat);
+      this.isLogin=this.logdat;
   }
 }
 </script>

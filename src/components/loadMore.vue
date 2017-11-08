@@ -36,7 +36,7 @@ export default {
                   _this.loadLock=false;
                   setTimeout(()=>{
                     _this.dat.callBack(_this.dat.page);
-                  },1000);
+                  },300);
               }
            }
       })

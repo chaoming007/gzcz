@@ -98,7 +98,7 @@ export default {
       renderDat:[],
       timRenderDat:[],      //临时信息流数据
       usersArr:[],          //关注用户id集合          
-      isLogin:{},         //是否已经登录
+      isLogin:"",         //是否已经登录
       gzTuff:true,            //关注按钮控制
       loadDat:{              //加载更多数据
         page:DAT_URL.PAGE_NUM,  //默认加载第一页
@@ -150,14 +150,16 @@ export default {
           let uid="";
           this.usersArr=[];
           this.timRenderDat.forEach((item,key)=>{
-            if(res[key]){
-              if(item.UserId===res[key].uid){
-                 item.userInfo=res[key];
-                 this.usersArr.push(item.UserId);
-              }
-            }
-          });
-          
+             item.attentionstatus=0;   
+             res.forEach((item1,key1)=>{
+                 if(res[key1]){
+                     if(item.UserId===item1.uid){
+                        item.userInfo=item1;
+                        this.usersArr.push(item.UserId);
+                     }
+                 }
+             })    
+          });          
           if(this.usersArr.length>=1){
               uid=this.usersArr.join(",");
               this.gzInfoGet(uid);    //关注请求
@@ -165,43 +167,39 @@ export default {
               this.renderDatSet(this.timRenderDat);
           }    
       },
-      gzInfoGet(id){            //是否被关注请求
-          if(this.isLogin.isLogined){            //如果没有登录
-              let getDat={
-                 url:DAT_URL.WATCH_URL_DAT+"?uids="+id,
-                 type:"GET",
-                 dataType:"jsonp",
-                 jsonp:'callback',
-                 callback:this.isWatchFun
-              }
-              this.getDataFun(getDat);
-          }else{
-              let dat={status:true};
-              this.isWatchFun(dat);
-          }
+      gzInfoGet(id){            //是否被关注请求      
+           if(this.isLogin){     //已经登录
+               let getDat={
+                  url:DAT_URL.WATCH_URL_DAT+"?uids="+id,
+                  type:"GET",
+                  dataType:"jsonp",
+                  jsonp:'callback',
+                  callback:this.isWatchFun
+               }
+               this.getDataFun(getDat);
+               
+           }else{               //没有登录
+               let dat={status:false};
+               this.isWatchFun(dat);
+           } 
       },  
-      isWatchFun(dat){                 //关注回调
+      isWatchFun(dat){                 //关注回调        
         if(dat.status==true){
-            this.timRenderDat.forEach((item,key)=>{
-                if(this.isLogin.isLogined){              //是否登录    
-                    dat.data.forEach((item1,key1)=>{
-                      if(item.UserId===item1.uid){
+            this.timRenderDat.forEach((item,key)=>{  
+                dat.data.forEach((item1,key1)=>{
+                    if(item.UserId===item1.uid){
                         if(item1.attentionstatus==0){  //attentionstatus
                           item.attentionstatus=0;    //0为没有关注
                         }else{
                           item.attentionstatus=1;    //1为已经关注
                         }
-                      }else{
-                        item.attentionstatus=0;
-                      }    
-                    })
-                }else{
-                    item.attentionstatus=0;         //未登录只显示关注按钮
-                } 
+                    }  
+                })
             })
-            
         }else{
-            throw error("请求错误！");
+            this.timRenderDat.forEach((item,key)=>{  
+                item.attentionstatus=0;           //0为没有关注
+            })
         }
         this.renderDatSet(this.timRenderDat);  
       },
@@ -238,14 +236,12 @@ export default {
           this.userInfoGet(uids);
       },
       vLoginFun(v){        //验证是否登录
-          this.isLogin=Object.assign({},v);
+          this.isLogin=v;
           this.infoStreamGet(this.sendDat.page);  
       }
   },
   mounted(){
-      //loginFun(this.vLoginFun);
-      this.isLogin.isLogined=GlobalIsLogin;    //GlobalIsLogin;   
-      this.vLoginFun(this.isLogin);
+      isLoginFun(this.vLoginFun);
   },
   components:{
      loadMore,
