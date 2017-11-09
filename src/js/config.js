@@ -9,6 +9,11 @@ export default {
    PAGE_NUM:1,    //默认加载第几页
    PAGE_SIZE:7,    //每页条数
    CACHE:true,     
+   
+  //  暂无图片
+  
+  NO_IMG:"http://img2.bitautoimg.com/bitauto/2017/11/09/a2c7e83d-8c5a-43fa-b2d6-df1c55acfbb5.png",
+   
   
    //新闻信息流接口
    newsUrl:"http://m.yiche.com",                           //普通新闻

@@ -43,7 +43,7 @@
                         <h6><span class="box-txt">{{item.contentLess}}</span></h6>
                       </a>
                       <a :href="item.aLink"  target="_blank" class="img-box">
-                        <i class="icon-video" v-show="item.Type==12||item.Type==9"></i>
+                        <i class="icon-video" v-show="item.Type==12||item.Type==9 || item.Type==3"></i>
                         <span v-if="item.Type==9"  :class="item.liveStatusSet['css']">{{item.liveStatusSet['text']}}</span>
                         <img :src="item.PicCover | picUrlSet(item.Type)" />
                       </a>
@@ -104,12 +104,13 @@ export default {
         page:DAT_URL.PAGE_NUM,  //默认加载第一页
         loadLock:true,
         loadShow:false,
+        loadNum:1,           
         callBack:this.infoStreamGet
       }         
     }
   },
   props:{
-    "cslist":String
+    "cslist":Object
   },
   methods:{
       /**
@@ -128,7 +129,7 @@ export default {
          this.loadDat.page=page;
          let getDat={
              url:DAT_URL.LIST_URL_DAT,
-             data:{size:this.sendDat.size,page:page,cache:this.sendDat.cache,cslist:this.cslist},
+             data:{size:this.sendDat.size,page:page,cache:this.sendDat.cache,cslist:this.cslist.sid},
              type:"GET",
              dataType:"jsonp",
              jsonp:'callback',

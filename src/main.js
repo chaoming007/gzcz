@@ -7,7 +7,7 @@ Event=new Vue();
 new Vue({
   el: '#app',
   data:{
-    cslist:""
+    cslist:{}
   },
   methods:{
     setTitFun(h){
@@ -16,7 +16,8 @@ new Vue({
     }
   },
   created(){
-     this.cslist=Filter.getQueryString("sid");  
+     this.cslist.sid=Filter.getQueryString("sid"); 
+     this.cslist.Name=Filter.getQueryString("Name");
   },
   mounted(){
      Event.$on("setTit",h=>{

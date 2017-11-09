@@ -9,7 +9,7 @@
      <div class="full-screen-section">
       <img :src="renderDat.CoverImage|bigPicSet" />
       <div class="b-info">
-        <span class="r-txt icon-photo">{{renderDat.AlbumCount}}</span>
+        <span class="r-txt icon-photo" v-show="renderDat.AlbumCount!=0">{{renderDat.AlbumCount}}</span>
       </div>
     </div>
     <!--展厅-牌 start-->
@@ -36,12 +36,12 @@ import filter from '../filter/filter.js'
 export default {
   data () {
     return {
-      sendDat:{eid:229,sid:this.cslist},
+      sendDat:{eid:229,sid:this.cslist.sid},
       renderDat:""
     }
   },
   props:{
-    "cslist":String
+    "cslist":Object
   },
   methods:{
       getData(){   
@@ -55,8 +55,15 @@ export default {
             data: this.sendDat
           })
           .done((res)=>{
+            if(res.code!=1){
+               window.location.href="http://car.m.yiche.com/"+this.cslist.Name;
+               return; 
+            }
             if(res.code==1 && res.msg=="OK"){
                this.renderDat=Object.assign({},res.data);
+               if(res.data.AlbumCount==0){
+                 this.renderDat.CoverImage=DAT_URL.NO_IMG;
+               }
                this.commitFun(res.data);
             }
           })
