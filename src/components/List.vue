@@ -255,7 +255,7 @@ export default {
       }
   },
   mounted(){
-      isLoginFun(this.vLoginFun);
+      isLogin().done(this.vLoginFun);
   },
   components:{
      loadMore,

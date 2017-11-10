@@ -46,11 +46,22 @@ export default {
   data(){
     return {
       item:this.userdat,     //用户数据
-      userCenterLink:DAT_URL.userCenter+this.userdat.UserId,           //用户个人中心
+      //userCenterLink:DAT_URL.userCenter+this.userdat.UserId,           //用户个人中心
       isLogin:"",         //是否已经登录
     }
   },
-  props:["userdat","logdat"],                 
+  props:["userdat","logdat"], 
+  computed:{
+     userCenterLink(){                  //用户个人中心
+       let aLink="";
+       if(isApp()){                                  //如果是app
+          aLink=callApp(this.userdat.UserId,13);
+       }else{
+          aLink=DAT_URL.userCenter+this.userdat.UserId;
+       }
+       return aLink;
+     }
+  },                
   methods:{
     getDataFun(dat,evt){              //关注请求
         $.ajax(dat).done((res)=>{
@@ -60,23 +71,25 @@ export default {
         })
     },
     addWatchDat(dat,evt){       //增加关注事件
-        if(!isLogin){                   //如果没有登录
-            gotoLogin();
-            return;
-        }    
-        let getDat={
-            url:DAT_URL.ADD_WATCH_DAT+"?tid="+this.item.UserId,
-            dataType:"json",
-            type:"POST",
-            cache:false,
-            xhrFields: { withCredentials: true},
-            callback:this.addWatchFun
-        }
-        this.getDataFun(getDat,evt);
+        
+        isLogin().done((loginResult)=>{
+            if (loginResult == false){
+                 gotoLogin();
+                 return;
+            }    
+            let getDat={
+                url:DAT_URL.ADD_WATCH_DAT+"?tid="+this.item.UserId,
+                dataType:"json",
+                type:"POST",
+                cache:false,
+                xhrFields: { withCredentials: true},
+                callback:this.addWatchFun
+            }
+            this.getDataFun(getDat,evt);
+        })
     },
     addWatchFun(dat,evt){
         if(dat=="ok"){
-           console.log("关注成功");
            this.warnInfoFun("关注成功！");
            this.showHideFun(evt);
         }else{
@@ -92,30 +105,32 @@ export default {
        tag.show();
        let timer=setTimeout(()=>{
            tag.hide();
-       },3000);
+       },2000);
        tag.on("mouseover",function(){
            clearTimeout(timer); 
        });
        tag.on("mouseout",function(){
            timer=setTimeout(()=>{
                tag.hide();
-           },3000);
+           },2000);
        })       
     },
     delWatchDat(id,evt){       //取消关注事件
-        if(!isLogin){                   //如果没有登录
-            gotoLogin();
-            return;
-        }    
-        let getDat={
-            url:DAT_URL.DEL_WATCH_DAT+"?tid="+this.item.UserId,
-            cache:false,
-            dataType:"json",
-            type:"POST",
-            xhrFields: { withCredentials: true},
-            callback:this.delWatchFun
-        }
-        this.getDataFun(getDat,evt);
+      isLogin().done((loginResult)=>{
+          if (loginResult == false){
+               gotoLogin();
+               return;
+          }    
+          let getDat={
+              url:DAT_URL.DEL_WATCH_DAT+"?tid="+this.item.UserId,
+              cache:false,
+              dataType:"json",
+              type:"POST",
+              xhrFields: { withCredentials: true},
+              callback:this.delWatchFun
+          }
+          this.getDataFun(getDat,evt);
+      })
         
     },
     showGzFun(evt){
@@ -126,7 +141,6 @@ export default {
     },
     delWatchFun(dat,evt){
       if(dat=="ok"){
-         console.log("取消成功！");
          this.warnInfoFun("取消关注成功！");
          this.showGzFun(evt);
       }else{
@@ -138,7 +152,7 @@ export default {
         $("#warnInfo").show();
         setTimeout(()=>{
             $("#warnInfo").hide();  
-        },2000);
+        },1500);
     }
   
   },

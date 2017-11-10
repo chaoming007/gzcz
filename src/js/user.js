@@ -13,6 +13,7 @@ if (getCookie("ycappinfo") != null || getCookie("BitautoAppInfo")!= null){
 }else{
   type= PC;
 }
+
 function isWap() {
   return type == WAP;
 }
@@ -65,7 +66,7 @@ function callApp(id,type)
     
     return result;
 }
-var isLogin = false;
+//var isLogin = false;
 
 var asyncLogin=$.ajax({
       url: "http://clientapi.yiche.com/account/authenticate",
@@ -74,32 +75,27 @@ var asyncLogin=$.ajax({
 xhrFields: { withCredentials: true }
 });
 
-
-function isLoginFun(callBack) {
+function isLogin() {
+  var deferred = $.Deferred();
   if (isWap()) {
     asyncLogin.done(function (data) {
-      if(data.IsAuthenticated){
-         isLogin = true;
-      }else{
-         isLogin = false;
-      }  
-      callBack(isLogin);
+      if (data.IsAuthenticated)
+        deferred.resolve(true);
+      else
+        deferred.resolve(false);
     });
   }
   else if (isApp()) {
-    if (getCookie("BitautoAppUserToken") != null) {
-      isLogin = true;
-      callBack(isLogin);
-    }
+    deferred.resolve(getCookie("BitautoAppUserToken")!=null);
+  } else if(typeof Bitauto != "undefined") {
+    Bitauto.Login.onComplatedHandlers.add('memory once', function (loginResult) {
+      deferred.resolve(loginResult.isLogined);
+    });
+  }else{
+    deferred.resolve(false);
   }
-  else {
-    if (typeof Bitauto != "undefined") {
-      isLogin = !!Bitauto.Login.result ? Bitauto.Login.result.isLogined : false;
-      callBack(isLogin);
-    }
-  }
+  return deferred;
 }
-
 
 
 function gotoLogin() {
