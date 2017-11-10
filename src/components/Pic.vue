@@ -36,7 +36,7 @@ import filter from '../filter/filter.js'
 export default {
   data () {
     return {
-      sendDat:{eid:229,sid:this.cslist.sid},
+      sendDat:{eid:ExhibitionID,sid:this.cslist.sid},
       renderDat:""
     }
   },
