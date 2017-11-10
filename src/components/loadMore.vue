@@ -5,7 +5,7 @@
         </div>
         
         <div class="loaded-txt" v-show="getPropsDat.loadShow">
-          <span>已经全部加载完毕</span>
+          <span>{{getPropsDat.loadTxt}}</span>
         </div>	
   </div>
 </template>

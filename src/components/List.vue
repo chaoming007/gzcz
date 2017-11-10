@@ -96,7 +96,7 @@ export default {
     return {
       sendDat:{size:DAT_URL.PAGE_SIZE,page:DAT_URL.PAGE_NUM,cache:DAT_URL.CACHE},  //信息流请求数据
       renderDat:[],
-      timRenderDat:[],      //临时信息流数据
+      timRenderDat:[],      //信息流数据
       usersArr:[],          //关注用户id集合          
       isLogin:"",         //是否已经登录
       gzTuff:true,            //关注按钮控制
@@ -104,7 +104,7 @@ export default {
         page:DAT_URL.PAGE_NUM,  //默认加载第一页
         loadLock:true,
         loadShow:false,
-        loadNum:1,           
+        loadTxt:"",           
         callBack:this.infoStreamGet
       }         
     }
@@ -219,10 +219,23 @@ export default {
       },
       
       infoSetDat(res){
+          if(this.renderDat.length==0 && res.data.length==0){
+            this.loadDat.loadShow=true;
+            this.loadDat.loadLock=true;
+            this.loadDat.loadTxt="暂无数据";
+            return;
+          }
          if(res.data.length==0){     //没有数据时候
             this.loadDat.loadShow=true;
             this.loadDat.loadLock=true;
+            this.loadDat.loadTxt="已经全部加载完毕";
             return;
+         }
+         
+         if(res.data.length<DAT_URL.PAGE_SIZE){
+           this.loadDat.loadShow=true;
+           this.loadDat.loadLock=true;
+           this.loadDat.loadTxt="已经全部加载完毕";
          }
          this.timRenderDat=[...res.data];
          this.userArrFun(res);
