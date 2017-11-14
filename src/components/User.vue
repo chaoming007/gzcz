@@ -3,7 +3,7 @@
        <!-- 用户信息 start   -->
        
              <div class="section-row" v-if="item.userTuff">
-                 <a :href="userCenterLink" class="person-txt" target="_blank">
+                 <a :href="userCenterLink" class="person-txt" >
                    <div class="img-box">
                      <i class="v"></i>
                      <img :src="'http:'+item.userInfo.avatarpath|picUrlSet(20)" />

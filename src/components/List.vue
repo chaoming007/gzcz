@@ -22,7 +22,7 @@
                       <p class="txt">{{item.contentLess}}</p>
                       <ul class="col-img-3">
                             <li v-for="(itempic,num) in item.picArr">
-                                <a :href="item.aLink" target="_blank" class="img-box">
+                                <a :href="item.aLink"  class="img-box">
                                   <img :src="itempic|picUrlSet(item.Type)" />
                                   <i class="icon-photo" v-show="num==2">共{{item.PicCount}}图</i>
                                 </a>
@@ -39,10 +39,10 @@
       
               <!-- 新闻流 start   -->
                 <div class="info-photo"  v-else>
-                      <a class="ref" :href="item.aLink" target="_blank">
+                      <a class="ref" :href="item.aLink" >
                         <h6><span class="box-txt">{{item.contentLess}}</span></h6>
                       </a>
-                      <a :href="item.aLink"  target="_blank" class="img-box">
+                      <a :href="item.aLink"   class="img-box">
                         <i class="icon-video" v-show="item.Type==12||item.Type==9 || item.Type==3"></i>
                         <span v-if="item.Type==9"  :class="item.liveStatusSet['css']">{{item.liveStatusSet['text']}}</span>
                         <img :src="item.PicCover | picUrlSet(item.Type)" />

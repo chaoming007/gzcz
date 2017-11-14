@@ -14,6 +14,8 @@ export default {
   
   NO_IMG:"http://img2.bitautoimg.com/bitauto/2017/11/09/a2c7e83d-8c5a-43fa-b2d6-df1c55acfbb5.png",
    
+  //大图链接
+  //bigImgSrc:"http://photo.m.yiche.com/exhibit/picture/{0}/0/",
   
    //新闻信息流接口
    newsUrl:"http://m.yiche.com",                           //普通新闻

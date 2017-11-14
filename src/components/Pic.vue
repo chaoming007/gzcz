@@ -7,7 +7,7 @@
     <!-- 导航头 end   -->
     
      <div class="full-screen-section">
-      <img :src="renderDat.CoverImage|bigPicSet" />
+      <a :href="renderDat.imgLinkSrc"><img :src="renderDat.CoverImage|bigPicSet" /></a>
       <div class="b-info">
         <span class="r-txt icon-photo" v-show="renderDat.AlbumCount!=0">{{renderDat.AlbumCount}}</span>
       </div>
@@ -48,7 +48,7 @@ export default {
           $.ajax({
             url: DAT_URL.PIC_URL_DAT,
             type: 'GET',
-            cache:false,
+            cache:true,
             dataType: 'jsonp',
             jsonp:'callback',
             jsonpCallback:'JsonpCallBack',
@@ -61,8 +61,15 @@ export default {
             }
             if(res.code==1 && res.msg=="OK"){
                this.renderDat=Object.assign({},res.data);
+               if(this.renderDat.TargetUrl){
+                  let reg=/http:\/\/photo\.bitauto\.com\/exhibit\/car\//gi;
+                  this.renderDat.imgLinkSrc=this.renderDat.TargetUrl.replace(reg,"http://photo.m.yiche.com/exhibit/picture/");
+               }else{
+                  this.renderDat.imgLinkSrc="###";
+               }
                if(res.data.AlbumCount==0){
                  this.renderDat.CoverImage=DAT_URL.NO_IMG;
+                 this.renderDat.imgLinkSrc="###";
                }
                this.commitFun(res.data);
             }
