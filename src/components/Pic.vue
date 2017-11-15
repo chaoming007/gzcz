@@ -59,8 +59,10 @@ export default {
                window.location.href="http://car.m.yiche.com/"+this.cslist.Name;
                return; 
             }
+            console.log(res);
             if(res.code==1 && res.msg=="OK"){
-               this.renderDat=Object.assign({},res.data);
+               //this.renderDat=Object.assign({},res.data);
+               this.renderDat=res.data;
                if(this.renderDat.TargetUrl){
                   let reg=/http:\/\/photo\.bitauto\.com\/exhibit\/car\//gi;
                   this.renderDat.imgLinkSrc=this.renderDat.TargetUrl.replace(reg,"http://photo.m.yiche.com/exhibit/picture/");
